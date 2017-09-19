@@ -22,13 +22,14 @@ class DynamicImage extends Controller
         $dir_name = $base_dir.$service_name;
         $file_name = $dir_name.'/gd_'.$width.'x'.$height.'.png';
 
+        if(file_exists($file_name)){
+            return response()->file($file_name);
+        }
+
         if(!is_dir($base_dir.$service_name)){
             mkdir($base_dir.$service_name, 0777, true);
         }
 
-        if(file_exists($file_name)){
-            return response()->file($file_name);
-        }
         $image = imagecreate($width, $height);
         $bg_color = imagecolorallocatealpha($image, 255, 180, 180, 0);
         $font_color = imagecolorallocatealpha($image, 255, 255, 255, 0);
