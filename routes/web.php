@@ -10,9 +10,20 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', function(){
+//    error_reporting(E_ALL);
+   $dynamicImageDir = $_SERVER['DOCUMENT_ROOT'].'\public\img\dynamic';
+   $arr = ['apple','banana','orange'];
+   echo __DIR__;
+   echo in_array('oran',$arr);
+//   dd(is_numeric($data));
 });
-
-Route::get('/dynamicImage', 'DynamicImage@index');
+Route::get('/image/make', 'ImageGenerator@getImage');
+Route::get('/image/list', 'ImageGenerator@listingImage');
+//Route::get('/image/dashboard', 'DynamicImage@index');
+//
+//Route::resource('/image', 'DynamicImage',
+//    ['names' => [
+//
+//    ]]
+//);
