@@ -10,20 +10,29 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+// ULR 필터링 방법 - pattern
+//Route::pattern('aaa', '[0-9a-zA-Z]{3}');
+//Route::get('/{foo?}', function($foo = 'bar'){
+//   return $foo;
+//});
+
+// ULR 필터링 방법 - where
+//Route::get('/{foo?}', function($foo = 'bar'){
+//    return $foo;
+//})->where('foo', '[0-9a-zA-Z]{3}');
 Route::get('/', function(){
-//    error_reporting(E_ALL);
-   $dynamicImageDir = $_SERVER['DOCUMENT_ROOT'].'\public\img\dynamic';
-   $arr = ['apple','banana','orange'];
-   echo __DIR__;
-   echo in_array('oran',$arr);
-//   dd(is_numeric($data));
+    $viewModel = [];
+    return view('index')->with($viewModel);
+})->name('index');
+
+Route::prefix('/image')->group(function(){
+    Route::get('/', 'ImageGenerator@main')->name('imageMain');
+    Route::get('/generation', 'ImageGenerator@getImage')->name('generation');
+    Route::get('/list', 'ImageGenerator@listingImage')->name('listing');
 });
-Route::get('/image/make', 'ImageGenerator@getImage');
-Route::get('/image/list', 'ImageGenerator@listingImage');
-//Route::get('/image/dashboard', 'DynamicImage@index');
-//
-//Route::resource('/image', 'DynamicImage',
-//    ['names' => [
-//
-//    ]]
-//);
+
+Route::prefix('/font')->group(function(){
+    Route::get('/', 'FontHelper@index')->name('fontMain');
+});
+//route('generate', ['width'=>100,'height'=>200]);

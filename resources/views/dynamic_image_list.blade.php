@@ -12,7 +12,6 @@
         <title>Laravel</title>
     </head>
     <body>
-
     {{--<div class="ui two column stackable grid">--}}
         {{--<div class="column">--}}
 
@@ -66,11 +65,19 @@
     {{--</div>--}}
 
     <a href="{{ url('/image/make',['?width=115&height=301&service=common']) }}" target="_blank">image generate</a>
+        <ul>
         @forelse($data as $item)
-            {{ $item['type'] }}
+            <li>
+            @if( $item['type'] === 'directory')
+                <a href="{{ $item['current_item'] }}">/{{ $item['pull_path'] }}</a>
+            @else
+                <a href="{{ $item['current_item'] }}">{{ $item['pull_path'] }}</a>
+            @endif
+            </li>
         @empty
-
+            <li>empty directory</li>
         @endforelse
+        </ul>
     </body>
 
     <script src="{{ asset('public/js/app.js') }}"></script>
