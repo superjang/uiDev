@@ -10,10 +10,16 @@
     <link rel="stylesheet" href="{{ asset('public/frameworks/materialize/css/materialize.css') }}">
 </head>
 <body>
-@include('../navigation')
-@yield('content')
+@include('../header')
+
+<div id="content">
+    @yield('content')
+</div>
+
 {{--https://material.io/icons/--}}
+
 @include('../footer')
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="{{ asset('public/frameworks/materialize/js/materialize.min.js') }}"></script>
 <script>
