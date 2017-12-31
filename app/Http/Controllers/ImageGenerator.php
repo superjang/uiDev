@@ -9,6 +9,8 @@ class ImageGenerator extends Controller
     // 동적 이미지 생성 위치
     private $image_root_directory = '/public/images/uploads';
 
+    private $image_format = ['png','jpg','gif'];
+
     // 기본 이미지 생성 정보
     private $default_image = [
         'service' => 'default', // directory name
@@ -51,8 +53,8 @@ class ImageGenerator extends Controller
         // 이미지 파일명
         $image['file_name'] = isset($image['prefix']) ? $image['prefix'] . '_' : '';
         $image['file_name'] .= $image['width'] . 'x' . $image['height'];
-        $image['file_name'] .= '_#' . $image['bgColor'];
-        $image['file_name'] .= '_' . $image['opacity'].'%';
+        $image['file_name'] .= '_' . $image['bgColor'];
+        $image['file_name'] .= '_' . $image['opacity'];
         $image['file_name'] .= '.' . $image['type'];
 
         // 이미지 전체 절대 경로
@@ -161,24 +163,32 @@ class ImageGenerator extends Controller
     {
         $root_dir_name = $_SERVER['DOCUMENT_ROOT'] . $this->image_root_directory;
         $dir_list = scandir($root_dir_name, 1);
-        $view_model['data'] = [];
-        $view_model['data']['serviceList'] = [];
+//        $view_model['data'] = [];
+//        $view_model['data']['serviceList'] = [];
+        $view_model['image_format'] = $this->image_format;
 
-        foreach ($dir_list as $item) {
-            if ($item === '.' or $item === '..') {
-                continue;
-            }
-
-            array_push($view_model['data']['serviceList'], $item);
-        }
+//        foreach ($dir_list as $item) {
+//            if ($item === '.' or $item === '..') {
+//                continue;
+//            }
+//
+//            array_push($view_model['data']['serviceList'], $item);
+//        }
 //        dd($view_model);
         return view('image/generate')->with($view_model);
     }
 
     public function make(Request $request)
     {
+        $this->validate($request, [
+            'type' => 'required',
+            'width' => 'required',
+            'height' => 'required',
+        ]);
+
         $image = $this->getImageInformation($request);
         $view_model = $image;
+        $view_model['image_format'] = $this->image_format;
 
         if (!\File::exists($image['file_full_path'])) {
             // 이미지 없을 경우 이미지 생성
@@ -186,7 +196,12 @@ class ImageGenerator extends Controller
         }
 //
 //dd($view_model);
-        return view('image/generate')->with($view_model);
+        return redirect()
+            ->route('imageGenerate')
+            ->with('service', $request->service)
+            ->with('service', $request->prefix)
+            ->with('fileFullPath', $this->image_root_directory.'/'.$image['service'].'/'.$image['file_name'])
+            ->withInput($view_model);
     }
 
     public function upload(Request $request)
@@ -237,10 +252,7 @@ class ImageGenerator extends Controller
 
         return redirect()
             ->route('imageUpload')
-            ->with('service', $request->service)
-            ->with('prefix', $request->prefix)
-            ->with('fileName', $file->getClientOriginalName())
-            ->with('fileFullPath', $this->image_root_directory.'/'.$service.'/'.$filename);
-//        return view('image/upload')->with($viewModel);
+            ->with('fileFullPath', $this->image_root_directory.'/'.$service.'/'.$filename)
+            ->withInput($viewModel);
     }
 }

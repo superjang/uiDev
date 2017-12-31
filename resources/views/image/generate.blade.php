@@ -15,27 +15,26 @@
         <div id="box--image_viewer">
                 <div class="row">
                         <div class="card">
-                                @if (@isset($file_full_path))
-                                        <div class="card-image">
-                                                <a href="@isset($file_full_path) {{ $file_full_path }} @endisset" target="_blank">
-                                                        <img src="@isset($file_full_path) {{ $file_full_path }} @endisset" alt="">
-                                                </a>
-                                                <button type="button" class="btn-floating halfway-fab waves-effect waves-light red" title="copy image path"><i class="material-icons">content_copy</i></button>
-                                        </div>
-                                        <div class="card-content">
-                                                <span class="card-title">IMAGE PATH</span>
-                                                <input type="text" readonly value="@isset($file_full_path) {{ $file_full_path }} @endisset">
-                                        </div>
-                                @else
-                                        <div class="card-image">
-                                                <img src="{{asset('public/images/bg_no_image.png')}}" alt="">
-                                        </div>
-                                        <div class="card-content">
-                                                <span class="card-title">IMAGE PATH</span>
-                                                <input type="text" readonly value="no Image">
-                                        </div>
-
-                                @endif
+                            @if (session('fileFullPath'))
+                                <div class="card-image">
+                                    <a href="{{ session('fileFullPath') }}" target="_blank">
+                                        <img src="{{ session('fileFullPath') }}" alt="">
+                                    </a>
+                                    <button type="button" class="btn-floating halfway-fab waves-effect waves-light red" title="copy image path"><i class="material-icons">content_copy</i></button>
+                                </div>
+                                <div class="card-content">
+                                    <span class="card-title">IMAGE PATH</span>
+                                    <input type="text" readonly value="{{ session('fileFullPath') }}">
+                                </div>
+                            @else
+                                <div class="card-image">
+                                    <img src="{{asset('public/images/bg_no_image.png')}}" alt="">
+                                </div>
+                                <div class="card-content">
+                                    <span class="card-title">IMAGE PATH</span>
+                                    <input type="text" readonly value="no Image">
+                                </div>
+                            @endif
                         </div>
                 </div>
         </div>
@@ -51,45 +50,70 @@
         <form action="{{ route('imageMake') }}" method="POST" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 <div class="input-field">
-                        <input placeholder="ex) smiledelivery" id="first_name" type="text" class="validate" name="service" value="@isset($service) {{ $service }} @endisset">
+                        <input placeholder="ex) smiledelivery" id="first_name" type="text" class="validate" name="service" value="{{old('service')}}">
                         <label for="first_name" class="active">Service (directory name)</label>
                 </div>
 
                 <div class="input-field">
-                        <input placeholder="ex) corner_best" id="first_name" type="text" class="validate" name="prefix" value="@isset($prefix) {{ $prefix }} @endisset">
+                        <input placeholder="ex) corner_best" id="first_name" type="text" class="validate" name="prefix" value="{{old('prefix')}}">
                         <label for="first_name" class="active">Prefix (file name prefix)</label>
                 </div>
 
                 <div class="input-field">
                         <div class="select-wrapper">
                                 <select class="initialized" name="type">
-                                        <option value="" disabled="" selected="">Choose Image Format</option>
-                                        <option value="png">png</option>
-                                        <option value="jpg">jpg</option>
-                                        <option value="gif">gif</option>
+                                @foreach($image_format as $item)
+                                        @if(old('type'))
+                                                @if($item === old('type'))
+                                                        <option value="{{$item}}" selected="selected">{{$item}}</option>
+                                                @else
+                                                        <option value="{{$item}}">{{$item}}</option>
+                                                @endif
+                                        @else
+                                                @if($item === 'png')
+                                                        <option value="{{$item}}" selected="selected">{{$item}}</option>
+                                                @else
+                                                        <option value="{{$item}}">{{$item}}</option>
+                                                @endif
+                                        @endif
+                                @endforeach
                                 </select>
                         </div>
                         <label>Format</label>
                 </div>
 
                 <div class="input-field">
-                        <input placeholder="ex) 360" id="first_name" type="number" min="1" class="validate" name="width" value="@isset($width) {{ $width }} @endisset">
-                        <label for="first_name" class="active">Width (px)</label>
+                        @if ($errors->has('width'))
+                                <input placeholder="ex) 360" id="first_name" type="number" min="1" class="validate invalid" name="width" value="{{old('width')}}">
+                                <label for="first_name" class="active">Width (wrong)</label>
+                        @else
+                                <input placeholder="ex) 360" id="first_name" type="number" min="1" class="validate" name="width" value="{{old('width')}}">
+                                <label for="first_name" class="active">Width (px)</label>
+                        @endif
                 </div>
 
                 <div class="input-field">
-                        <input placeholder="ex) 200" id="first_name" type="number" min="1" class="validate" name="height" value="@isset($height) {{ $height }} @endisset">
-                        <label for="first_name" class="active">Height (px)</label>
+                        @if ($errors->has('height'))
+                                <input placeholder="ex) 200" id="first_name" type="number" min="1" class="validate invalid" name="height" value="{{old('height')}}">
+                                <label for="first_name" class="active">Height (wrong)</label>
+                        @else
+                                <input placeholder="ex) 200" id="first_name" type="number" min="1" class="validate" name="height" value="{{old('height')}}">
+                                <label for="first_name" class="active">Height (px)</label>
+                        @endif
                 </div>
 
                 <div class="input-field">
-                        <input placeholder="ex) 08364d" id="first_name" type="text" name="bgColor" class="validate">
+                        <input placeholder="ex) 08364d" id="first_name" type="text" name="bgColor" class="validate" value="{{old('bgColor')}}">
                         <label for="first_name" class="active">Color (hex)</label>
                 </div>
 
                 <div class="input-field">
                         <p class="range-field">
+                            @if(old('opacity'))
+                                <input type="range" value="{{old('opacity')}}" min="0" max="100" name="opacity"/>
+                            @else
                                 <input type="range" value="0" min="0" max="100" name="opacity"/>
+                            @endif
                         </p>
                         <label for="first_name" class="active">Opacity (%)</label>
                 </div>

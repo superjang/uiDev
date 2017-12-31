@@ -53,12 +53,12 @@
                         {{--<h1>{{ $error }}</h1>--}}
                 {{--@endforeach--}}
                 <div class="input-field">
-                        <input placeholder="ex) smiledelivery" name="service" type="text" class="validate" value="@if(session('service')) {{ session('service') }} @endif">
+                        <input placeholder="ex) smiledelivery" name="service" type="text" class="validate" value="@if(old('service')){{ old('service') }}@endif">
                         <label for="first_name" class="active">Service (directory name)</label>
                 </div>
 
                 <div class="input-field">
-                        <input placeholder="ex) corner_best" name="prefix" type="text" class="validate" value="@if(session('prefix')) {{ session('prefix') }} @endif">
+                        <input placeholder="ex) corner_best" name="prefix" type="text" class="validate" value="@if(old('prefix')){{ old('prefix') }}@endif">
                         <label for="first_name" class="active">Prefix (file name prefix)</label>
                 </div>
 
@@ -82,7 +82,7 @@
                         @if ($errors->has('file'))
                             <label for="first_name" class="active">Upload File (wrong)</label>
                         @else
-                            <label for="first_name" class="active">Upload File @if(session('fileName')) ({{ session('fileName') }}) @endif</label>
+                            <label for="first_name" class="active">Upload File</label>
                         @endif
                 </div>
 
