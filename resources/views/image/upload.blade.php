@@ -30,10 +30,10 @@
                                         <div class="card-image">
                                                 <img src="{{asset('public/images/bg_no_image.png')}}" alt="">
                                         </div>
-                                        <div class="card-content">
-                                                <span class="card-title">IMAGE PATH</span>
-                                                <input type="text" readonly value="no Image">
-                                        </div>
+                                        {{--<div class="card-content">--}}
+                                                {{--<span class="card-title">IMAGE PATH</span>--}}
+                                                {{--<input type="text" readonly value="no Image">--}}
+                                        {{--</div>--}}
                                 @endif
                         </div>
                 </div>

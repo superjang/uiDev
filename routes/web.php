@@ -33,7 +33,7 @@ Route::prefix('/image')->group(function(){
     Route::post('/ffff', 'ImageGenerator@ffff')->name('controller_upload');
     Route::get('/generation', 'ImageGenerator@getImage')->name('generation');
     Route::get('/list', 'ImageGenerator@listingImage')->name('listing');
-    Route::post('/make', 'ImageGenerator@make')->name('imageMake');
+    Route::get('/make', 'ImageGenerator@make')->name('imageMake');
 });
 Route::prefix('/font')->group(function(){
     Route::get('/', 'FontHelper@index')->name('fontMain');

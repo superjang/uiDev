@@ -17,23 +17,25 @@
                         <div class="card">
                             @if (session('fileFullPath'))
                                 <div class="card-image">
-                                    <a href="{{ session('fileFullPath') }}" target="_blank">
-                                        <img src="{{ session('fileFullPath') }}" alt="">
+                                    <a href="{{session('fileFullPath')}}" target="_blank" title="{{ session('fileFullPath') }}">
+                                        <img src="{{session('fileFullPath')}}" alt="">
                                     </a>
                                     <button type="button" class="btn-floating halfway-fab waves-effect waves-light red" title="copy image path"><i class="material-icons">content_copy</i></button>
                                 </div>
                                 <div class="card-content">
-                                    <span class="card-title">IMAGE PATH</span>
-                                    <input type="text" readonly value="{{ session('fileFullPath') }}">
+                                    {{--<span class="card-title">IMAGE PATH</span>--}}
+                                    {{--<input type="text" readonly value="{{session('fileFullPath')}}">--}}
+                                    <span class="card-title">IMAGE REQUEST URL</span>
+                                    <input type="text" readonly value="{{session('requestUrl')}}">
                                 </div>
                             @else
                                 <div class="card-image">
                                     <img src="{{asset('public/images/bg_no_image.png')}}" alt="">
                                 </div>
-                                <div class="card-content">
-                                    <span class="card-title">IMAGE PATH</span>
-                                    <input type="text" readonly value="no Image">
-                                </div>
+                                {{--<div class="card-content">--}}
+                                    {{--<span class="card-title">IMAGE PATH</span>--}}
+                                    {{--<input type="text" readonly value="no Image">--}}
+                                {{--</div>--}}
                             @endif
                         </div>
                 </div>
@@ -47,8 +49,9 @@
                 SET IMAGE PARAMETER
         </h5>
 
-        <form action="{{ route('imageMake') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('imageMake') }}" method="get" enctype="multipart/form-data">
                 {{ csrf_field() }}
+                <input type="hidden" name="requestFrom" value="view">
                 <div class="input-field">
                         <input placeholder="ex) smiledelivery" id="first_name" type="text" class="validate" name="service" value="{{old('service')}}">
                         <label for="first_name" class="active">Service (directory name)</label>

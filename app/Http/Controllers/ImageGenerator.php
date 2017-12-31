@@ -136,7 +136,7 @@ class ImageGenerator extends Controller
             }
 
             $currentDirPath = $root_dir_name . '/' . $item;
-            $each_item = ['pull_path' => $currentDirPath];
+            $each_item = ['service' => $item];
             $each_item['current_item'] = $this->image_root_directory.'/'.$item;
 
             if (is_dir($currentDirPath)) {
@@ -150,7 +150,7 @@ class ImageGenerator extends Controller
             array_push($view_model['data'], $each_item);
         }
 
-        return view('dynamic_image_list')->with($view_model);
+        return view('image/dynamic_image_list')->with($view_model);
     }
 
 //            if(getimagesize($path) !== false){
@@ -194,14 +194,27 @@ class ImageGenerator extends Controller
             // 이미지 없을 경우 이미지 생성
             $image['file_full_path'] = $this->makeImage($request);
         }
-//
-//dd($view_model);
-        return redirect()
-            ->route('imageGenerate')
-            ->with('service', $request->service)
-            ->with('service', $request->prefix)
-            ->with('fileFullPath', $this->image_root_directory.'/'.$image['service'].'/'.$image['file_name'])
-            ->withInput($view_model);
+
+        $param = '';
+        $param .= 'width='.$request->width;
+        $param .= '&height='.$request->height;
+        $param .= '&type='.$request->type;
+        $param .= $request->service ? '&service='.$request->service : '';
+        $param .= $request->prefix ? '&prefix='.$request->prefix : '';
+        $param .= $request->bgColor ? '&bgColor='.$request->bgColor : '';
+        $param .= $request->opacity ? '&opacity='.$request->opacity : '';
+
+        if($request->requestFrom === 'view'){
+            return redirect()
+                ->route('imageGenerate')
+                ->with('service', $request->service)
+                ->with('service', $request->prefix)
+                ->with('requestUrl', '/image/generation?'.$param)
+                ->with('fileFullPath', $this->image_root_directory.'/'.$image['service'].'/'.$image['file_name'])
+                ->withInput($view_model);
+        }else{
+            return $this->getImage($request);
+        }
     }
 
     public function upload(Request $request)
