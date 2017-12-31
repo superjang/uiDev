@@ -15,14 +15,26 @@
         <div id="box--image_viewer">
                 <div class="row">
                         <div class="card">
+                                @if (session('fileFullPath'))
                                 <div class="card-image">
-                                        <img src="/public/images/uploads/homeshopping/20171227101436176676_0_0.jpg" alt="">
+                                        <a href="{{ session('fileFullPath') }}" target="_blank">
+                                                <img src="{{ session('fileFullPath') }}" alt="">
+                                        </a>
                                         <button type="button" class="btn-floating halfway-fab waves-effect waves-light red" title="copy image path"><i class="material-icons">content_copy</i></button>
                                 </div>
                                 <div class="card-content">
                                         <span class="card-title">IMAGE PATH</span>
-                                        <input type="text" readonly value="/public/images/uploads/homeshopping/20171227101436176676_0_0.jpg">
+                                        <input type="text" readonly value="{{ session('fileFullPath') }}">
                                 </div>
+                                @else
+                                        <div class="card-image">
+                                                <img src="{{asset('public/images/bg_no_image.png')}}" alt="">
+                                        </div>
+                                        <div class="card-content">
+                                                <span class="card-title">IMAGE PATH</span>
+                                                <input type="text" readonly value="no Image">
+                                        </div>
+                                @endif
                         </div>
                 </div>
         </div>
@@ -35,16 +47,18 @@
                 IMAGE UPLOAD
         </h5>
 
-        <form action="{{ route('imageMake') }}" method="POST" enctype="multipart/form-data">
-                {!! ! csrf_field() !!}
-
+        <form action="{{ route('controller_upload') }}" method="post" enctype="multipart/form-data">
+                {{ csrf_field() }}
+                {{--@foreach ($errors->all() as $error)--}}
+                        {{--<h1>{{ $error }}</h1>--}}
+                {{--@endforeach--}}
                 <div class="input-field">
-                        <input placeholder="ex) smiledelivery" type="text" class="validate" value="@isset($data->service) {{ $data->service }} @endisset">
+                        <input placeholder="ex) smiledelivery" name="service" type="text" class="validate" value="@if(session('service')) {{ session('service') }} @endif">
                         <label for="first_name" class="active">Service (directory name)</label>
                 </div>
 
                 <div class="input-field">
-                        <input placeholder="ex) corner_best" type="text" class="validate" value="@isset($data->prefix) {{ $data->prefix }} @endisset">
+                        <input placeholder="ex) corner_best" name="prefix" type="text" class="validate" value="@if(session('prefix')) {{ session('prefix') }} @endif">
                         <label for="first_name" class="active">Prefix (file name prefix)</label>
                 </div>
 
@@ -52,13 +66,24 @@
                         <div class="file-field input-field">
                                 <div class="btn">
                                         <span>File</span>
-                                        <input type="file">
+                                        <input type="file" name="file" value="">
+                                        {{--@isset($file) {{ $file }} @endisset--}}
                                 </div>
                                 <div class="file-path-wrapper">
-                                        <input class="file-path validate" type="text">
+                                    @if ($errors->has('file'))
+                                        <input class="file-path validate invalid" type="text" value="">
+                                    @else
+                                        <input class="file-path validate" type="text" value="">
+                                    @endif
+                                        {{--@isset($fileName) {{ $fileName }} @endisset--}}
                                 </div>
                         </div>
-                        <label for="first_name" class="active">Upload File</label>
+
+                        @if ($errors->has('file'))
+                            <label for="first_name" class="active">Upload File (wrong)</label>
+                        @else
+                            <label for="first_name" class="active">Upload File @if(session('fileName')) ({{ session('fileName') }}) @endif</label>
+                        @endif
                 </div>
 
                 <div class="box--button col2">

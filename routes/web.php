@@ -30,6 +30,7 @@ Route::get('/', function(){ return view('index'); })->name('index');
 Route::prefix('/image')->group(function(){
     Route::get('/generate', 'ImageGenerator@main')->name('imageGenerate');
     Route::get('/upload', 'ImageGenerator@upload')->name('imageUpload');
+    Route::post('/ffff', 'ImageGenerator@ffff')->name('controller_upload');
     Route::get('/generation', 'ImageGenerator@getImage')->name('generation');
     Route::get('/list', 'ImageGenerator@listingImage')->name('listing');
     Route::post('/make', 'ImageGenerator@make')->name('imageMake');

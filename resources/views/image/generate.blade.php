@@ -15,14 +15,27 @@
         <div id="box--image_viewer">
                 <div class="row">
                         <div class="card">
-                                <div class="card-image">
-                                        <img src="/image/generation?width=271&height=203&bgColor=08364d" alt="">
-                                        <button type="button" class="btn-floating halfway-fab waves-effect waves-light red" title="copy image path"><i class="material-icons">content_copy</i></button>
-                                </div>
-                                <div class="card-content">
-                                        <span class="card-title">IMAGE PATH</span>
-                                        <input type="text" readonly value="/image/generation?width=271&height=203&bgColor=08364d">
-                                </div>
+                                @if (@isset($file_full_path))
+                                        <div class="card-image">
+                                                <a href="@isset($file_full_path) {{ $file_full_path }} @endisset" target="_blank">
+                                                        <img src="@isset($file_full_path) {{ $file_full_path }} @endisset" alt="">
+                                                </a>
+                                                <button type="button" class="btn-floating halfway-fab waves-effect waves-light red" title="copy image path"><i class="material-icons">content_copy</i></button>
+                                        </div>
+                                        <div class="card-content">
+                                                <span class="card-title">IMAGE PATH</span>
+                                                <input type="text" readonly value="@isset($file_full_path) {{ $file_full_path }} @endisset">
+                                        </div>
+                                @else
+                                        <div class="card-image">
+                                                <img src="{{asset('public/images/bg_no_image.png')}}" alt="">
+                                        </div>
+                                        <div class="card-content">
+                                                <span class="card-title">IMAGE PATH</span>
+                                                <input type="text" readonly value="no Image">
+                                        </div>
+
+                                @endif
                         </div>
                 </div>
         </div>
@@ -36,20 +49,20 @@
         </h5>
 
         <form action="{{ route('imageMake') }}" method="POST" enctype="multipart/form-data">
-                {!! ! csrf_field() !!}
+                {{ csrf_field() }}
                 <div class="input-field">
-                        <input placeholder="ex) smiledelivery" id="first_name" type="text" class="validate" tabindex="2" value="@isset($data->service) {{ $data->service }} @endisset">
+                        <input placeholder="ex) smiledelivery" id="first_name" type="text" class="validate" name="service" value="@isset($service) {{ $service }} @endisset">
                         <label for="first_name" class="active">Service (directory name)</label>
                 </div>
 
                 <div class="input-field">
-                        <input placeholder="ex) corner_best" id="first_name" type="text" class="validate" tabindex="2">
+                        <input placeholder="ex) corner_best" id="first_name" type="text" class="validate" name="prefix" value="@isset($prefix) {{ $prefix }} @endisset">
                         <label for="first_name" class="active">Prefix (file name prefix)</label>
                 </div>
 
                 <div class="input-field">
                         <div class="select-wrapper">
-                                <select class="initialized">
+                                <select class="initialized" name="type">
                                         <option value="" disabled="" selected="">Choose Image Format</option>
                                         <option value="png">png</option>
                                         <option value="jpg">jpg</option>
@@ -60,23 +73,23 @@
                 </div>
 
                 <div class="input-field">
-                        <input placeholder="ex) 360" id="first_name" type="number" min="1" class="validate" tabindex="2">
+                        <input placeholder="ex) 360" id="first_name" type="number" min="1" class="validate" name="width" value="@isset($width) {{ $width }} @endisset">
                         <label for="first_name" class="active">Width (px)</label>
                 </div>
 
                 <div class="input-field">
-                        <input placeholder="ex) 200" id="first_name" type="number" min="1" class="validate" tabindex="2">
+                        <input placeholder="ex) 200" id="first_name" type="number" min="1" class="validate" name="height" value="@isset($height) {{ $height }} @endisset">
                         <label for="first_name" class="active">Height (px)</label>
                 </div>
 
                 <div class="input-field">
-                        <input placeholder="ex) 08364d" id="first_name" type="text" class="validate" tabindex="2">
+                        <input placeholder="ex) 08364d" id="first_name" type="text" name="bgColor" class="validate">
                         <label for="first_name" class="active">Color (hex)</label>
                 </div>
 
                 <div class="input-field">
                         <p class="range-field">
-                                <input type="range" value="0" min="0" max="100" />
+                                <input type="range" value="0" min="0" max="100" name="opacity"/>
                         </p>
                         <label for="first_name" class="active">Opacity (%)</label>
                 </div>

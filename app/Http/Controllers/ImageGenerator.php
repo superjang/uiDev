@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class ImageGenerator extends Controller
 {
     // 동적 이미지 생성 위치
-    private $image_root_directory = '\public\images\uploads';
+    private $image_root_directory = '/public/images/uploads';
 
     // 기본 이미지 생성 정보
     private $default_image = [
@@ -178,14 +178,14 @@ class ImageGenerator extends Controller
     public function make(Request $request)
     {
         $image = $this->getImageInformation($request);
-        $view_model['data'] = $image;
+        $view_model = $image;
 
         if (!\File::exists($image['file_full_path'])) {
             // 이미지 없을 경우 이미지 생성
             $image['file_full_path'] = $this->makeImage($request);
         }
-
-dd($view_model);
+//
+//dd($view_model);
         return view('image/generate')->with($view_model);
     }
 
@@ -205,5 +205,42 @@ dd($view_model);
         }
 
         return view('image/upload')->with($view_model);
+    }
+
+    public function ffff(Request $request)
+    {
+        $this->validate($request, [
+            'file' => 'required',
+        ]);
+
+        $file = $request->file('file');
+        $service = $request->service ? $request->service : $this->default_image['service'];
+        $prefix = $request->prefix ? $request->prefix . '_': $this->default_image['prefix'];
+        $filename = $prefix .'_'. $file->getClientOriginalName();
+        $file_full_path = public_path('/images/uploads') .'/'.$service.'/'.$filename;
+
+        if (!is_dir($service)) {
+            mkdir($service, 0777, true);
+        }
+
+        if (!\File::exists($file_full_path)) {
+            $file->move(public_path('/images/uploads') .'/'.$service, $filename);
+        }
+
+        $viewModel = [
+            'service'=>$request->service,
+            'prefix'=>$request->prefix,
+            'file'=>$file,
+            'fileName'=>$file->getClientOriginalName(),
+            'fileFullPath'=> $this->image_root_directory.'/'.$service.'/'.$filename,
+        ];
+
+        return redirect()
+            ->route('imageUpload')
+            ->with('service', $request->service)
+            ->with('prefix', $request->prefix)
+            ->with('fileName', $file->getClientOriginalName())
+            ->with('fileFullPath', $this->image_root_directory.'/'.$service.'/'.$filename);
+//        return view('image/upload')->with($viewModel);
     }
 }
