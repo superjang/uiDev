@@ -44,7 +44,7 @@
 
         <h5 class="layout_title light">
                 <i class="material-icons left">cloud_upload</i>
-                IMAGE UPLOAD
+                DUMMY IMAGE UPLOAD
         </h5>
 
         <form action="{{ route('controller_upload') }}" method="post" enctype="multipart/form-data">

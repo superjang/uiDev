@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'Test') }}</title>
+    @yield('css_common')
+    @yield('css_application')
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('public/frameworks/materialize/css/materialize.css') }}">
 </head>
@@ -19,7 +21,8 @@
 {{--https://material.io/icons/--}}
 
 @include('../footer')
-
+@yield('script_common')
+@yield('script_application')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="{{ asset('public/frameworks/materialize/js/materialize.min.js') }}"></script>
 <script>
