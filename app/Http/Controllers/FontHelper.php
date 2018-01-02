@@ -81,4 +81,22 @@ class FontHelper extends Controller
     {
         //
     }
+
+    /**
+     * Temp Method
+     */
+    public function list()
+    {
+        return view('font/list');
+    }
+
+    public function upload()
+    {
+        return view('font/add');
+    }
+
+    public function add()
+    {
+
+    }
 }

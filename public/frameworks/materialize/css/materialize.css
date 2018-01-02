@@ -3657,7 +3657,7 @@ nav ul a span.badge {
   left: 100%;
 }
 
-@media only screen and (min-width: 601px) {
+@media only screen and (min-width: 801px) {
   .row .col.m1 {
     width: 8.3333333333%;
     margin-left: auto;
@@ -4731,6 +4731,9 @@ small {
   font-size: 24px;
   font-weight: 300;
 }
+.card .card-header .card-title{
+  font-weight:bold;
+}
 
 .card .card-title.activator {
   cursor: pointer;
@@ -4865,6 +4868,7 @@ small {
 .card .card-content p {
   margin: 0;
   color: inherit;
+  word-break:break-all;
 }
 
 .card .card-content .card-title {
@@ -4882,6 +4886,10 @@ small {
   background-color: inherit;
   border-top: 1px solid rgba(160, 160, 160, 0.2);
   padding: 16px 24px;
+}
+
+.card .card-action.card-header{
+  padding-bottom:0;
 }
 
 .card .card-action:last-child {
