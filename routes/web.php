@@ -59,5 +59,3 @@ Route::prefix('/font')->group(function(){
 
 
 
-
-
