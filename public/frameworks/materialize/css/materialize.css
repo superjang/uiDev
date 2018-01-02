@@ -9478,3 +9478,13 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
     padding-bottom:20px;
   }
 }
+.font_helper .col{
+  padding:0;
+}
+.font_helper .header{
+  margin-top:20px;
+  padding:0 16px;
+}
+.font_helper .font_list .col{
+  padding:0 0.75rem;
+}
