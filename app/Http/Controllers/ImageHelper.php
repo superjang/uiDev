@@ -6,16 +6,18 @@ use Illuminate\Http\Request;
 
 class ImageHelper extends Controller
 {
+    // 동적 이미지 생성 위치
+    private $image_root_directory = '/public/images/uploads';
 
-    // 동적 이미지 생성 루트 폴더
-    private $image_root_directory = '\public\img\dynamic';
+    private $image_format = ['png','jpg','gif'];
+
     // 기본 이미지 생성 정보
     private $default_image = [
-        'service' => 'tmep',
-        'prefix' => 'temp',
-        'type' => 'png',
-        'bg' => ['r' => 34, 'g' => 143, 'b' => 255],
-        'opacity' => 0
+        'service' => 'default', // directory name
+        'prefix' => '', // filename prefix
+        'type' => 'png', // file extension
+        'bgColor' => '6482d8', // file background color
+        'opacity' => 0 // file opacity
     ];
 
     /**
@@ -23,7 +25,7 @@ class ImageHelper extends Controller
      * @param Request $request
      * @return array - 이미지 생성 값 연관배열
      */
-    private function getImageInformation(Request $request)
+    public function getImageInformation(Request $request)
     {
         // 이미지 필수 값 벨리데이션
         $this->validate($request, [
@@ -32,7 +34,7 @@ class ImageHelper extends Controller
         ]);
 
         // 이미지 생성 정보
-        $image_informations = [
+        $image = [
             // required
             'width' => $request->width,
             'height' => $request->height,
@@ -40,52 +42,91 @@ class ImageHelper extends Controller
             // options
             'service' => isset($request->service) ? $request->service : $this->default_image['service'],
             'prefix' => isset($request->prefix) ? $request->prefix : $this->default_image['prefix'],
-            'bg' => [
-                'r' => isset($request->r) ? (int)$request->r : $this->default_image['bg']['r'],
-                'g' => isset($request->g) ? (int)$request->g : $this->default_image['bg']['g'],
-                'b' => isset($request->b) ? (int)$request->b : $this->default_image['bg']['b'],
-            ],
+            'bgColor' => isset($request->bgColor) ? $request->bgColor : $this->default_image['bgColor'],
             'opacity' => isset($request->opacity) ? $request->opacity : $this->default_image['opacity'],
             'type' => isset($request->type) ? $request->type : $this->default_image['type'],
         ];
 
         // 이미지 저장위치
-        $image_informations['directory'] = $_SERVER['DOCUMENT_ROOT'] . $this->image_root_directory . $image_informations['service'];
-        // 이미지 파일명
-        $image_informations['file_name'] = $image_informations['prefix'] . '_' . $image_informations['width'] . 'x' . $image_informations['height'] . '_R' . $image_informations['bg']['r'] . 'G' . $image_informations['bg']['g'] . 'B' . $image_informations['bg']['b'] . '.' . $image_informations['type'];
-        // 이미지 전체 절대 경로
-        $image_informations['file_full_path'] = $image_informations['directory'] . '/' . $image_informations['file_name'];
+        $image['directory'] = $_SERVER['DOCUMENT_ROOT'] . $this->image_root_directory .'/'. $image['service'];
 
-        return $image_informations;
+        // 이미지 파일명
+        $image['file_name'] = isset($image['prefix']) ? $image['prefix'] . '_' : '';
+        $image['file_name'] .= $image['width'] . 'x' . $image['height'];
+        $image['file_name'] .= '_' . $image['bgColor'];
+        $image['file_name'] .= '_' . $image['opacity'];
+        $image['file_name'] .= '.' . $image['type'];
+
+        // 이미지 전체 절대 경로
+        $image['file_full_path'] = $image['directory'] . '/' . $image['file_name'];
+
+        return $image;
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * 요청 파라미터 기준으로 생성된 이미지 정보로 이미지 반환
+     * @param Request $request
+     * @return mixed
      */
-    public function index(Request $request)
+    public function getImage(Request $request)
     {
         $image = $this->getImageInformation($request);
-        $image_file_full_path = $image['file_full_path'];
 
-        if (!\File::exists($image_file_full_path)) {
+        if (!\File::exists($image['file_full_path'])) {
             // 이미지 없을 경우 이미지 생성
-            $image_file_full_path = $this->store($request);
+            $image['file_full_path'] = $this->makeImage($request);
         }
 
         // php.ini 에 extension=php_fileinfo 활성화 해야함
-        return response()->file($image_file_full_path);
+        return response()->file($image['file_full_path']);
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * 요청 파라미터 기준으로 신규 이미지 생성
+     * @param Request $request
+     * @return mixed
      */
-    public function create()
+    public function makeImage(Request $request)
     {
-        $root_dir_name = realpath($_SERVER['DOCUMENT_ROOT']) . $this->image_root_directory;
+        // php.ini 에 extension=php_gd2.dll 주석 해제야햐 GD라이브러리 사용가능
+        // extension_dir = 확장 라이브러리가 설치되어있는 경로를 잡아줘야함
+        $image = $this->getImageInformation($request);
+
+        if (!is_dir($image['directory'])) {
+            mkdir($image['directory'], 0777, true);
+        }
+
+        list($r, $g, $b) = sscanf($image['bgColor'], "%02x%02x%02x");
+        $new_image = imagecreate($image['width'], $image['height']);
+        $bg_color = imagecolorallocatealpha($new_image, $r, $g, $b, $image['opacity']);
+        $font_color = imagecolorallocatealpha($new_image, 255, 255, 255, 0);
+        $font_size = 5;
+        $string_size = $image['width'] . ' x ' . $image['height'];
+        $pos_x = (imagesx($new_image) - imagefontwidth($font_size)*strlen($string_size)) / 2;
+        $pos_y = (imagesy($new_image) - imagefontheight($font_size)) / 2;
+        imagestring($new_image, $font_size, $pos_x, $pos_y, $string_size, $font_color);
+        imagefill($new_image, 100, 0, $bg_color);
+
+        switch( $image['type'] ){
+            case 'png':
+                imagepng($new_image, $image['file_full_path']);
+                break;
+            case 'jpg':
+                imagejpeg($new_image, $image['file_full_path']);
+                break;
+            case 'gif':
+                imagegif($new_image, $image['file_full_path']);
+                break;
+        }
+
+        imagedestroy($new_image);
+
+        return $image['file_full_path'];
+    }
+
+    public function listingImage()
+    {
+        $root_dir_name = $_SERVER['DOCUMENT_ROOT'] . $this->image_root_directory;
         $dir_list = scandir($root_dir_name, 1);
         $view_model['data'] = [];
 
@@ -95,11 +136,8 @@ class ImageHelper extends Controller
             }
 
             $currentDirPath = $root_dir_name . '/' . $item;
-//            $currentDirPath = $this->image_root_directory . '/' . $item;
-            $each_item = [
-                'pull_path' =>  $this->image_root_directory . '\\' . $item,
-                'current_item' => $item
-            ];
+            $each_item = ['service' => $item];
+            $each_item['current_item'] = $this->image_root_directory.'/'.$item;
 
             if (is_dir($currentDirPath)) {
                 // directory
@@ -112,84 +150,122 @@ class ImageHelper extends Controller
             array_push($view_model['data'], $each_item);
         }
 
-        return view('dynamic_image_list')->with($view_model);
+        return view('image/dynamic_image_list')->with($view_model);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        // php.ini 에 extension=php_gd2.dll 주석 해제야햐 GD라이브러리 사용가능
-        // extension_dir = 확장 라이브러리가 설치되어있는 경로를 잡아줘야함
-        $image = $this->getImageInformation($request);
+//            if(getimagesize($path) !== false){
+//               $extension = pathinfo($path, PATHINFO_EXTENSION);
+//               if(! in_array($extension, array('gif','png','jpg','jpeg'))){
+//                   continue;
+//               }
 
-        if (!is_dir($image['directory'])) {
-            mkdir($image['directory'], 0777, true);
+    public function main()
+    {
+        $root_dir_name = $_SERVER['DOCUMENT_ROOT'] . $this->image_root_directory;
+        $dir_list = scandir($root_dir_name, 1);
+//        $view_model['data'] = [];
+//        $view_model['data']['serviceList'] = [];
+        $view_model['image_format'] = $this->image_format;
+
+//        foreach ($dir_list as $item) {
+//            if ($item === '.' or $item === '..') {
+//                continue;
+//            }
+//
+//            array_push($view_model['data']['serviceList'], $item);
+//        }
+//        dd($view_model);
+        return view('image/generate')->with($view_model);
+    }
+
+    public function make(Request $request)
+    {
+        $this->validate($request, [
+            'type' => 'required',
+            'width' => 'required',
+            'height' => 'required',
+        ]);
+
+        $image = $this->getImageInformation($request);
+        $view_model = $image;
+        $view_model['image_format'] = $this->image_format;
+
+        if (!\File::exists($image['file_full_path'])) {
+            // 이미지 없을 경우 이미지 생성
+            $image['file_full_path'] = $this->makeImage($request);
         }
 
-        $new_image = imagecreate($image['width'], $image['height']);
-        $bg_color = imagecolorallocatealpha($new_image, $image['bg']['r'], $image['bg']['g'], $image['bg']['b'], $image['opacity']);
-        $font_color = imagecolorallocatealpha($new_image, 255, 255, 255, 0);
-        $font_size = 4;
-        $string_size = $image['width'] . 'x' . $image['height'];
-        $string_service = $image['service'];
-        // $pos_x = 5;//(imagesx($new_image) - 9 * strlen($image_string)) / 2;
-        // $pos_y = 5;//(imagesy($new_image) - 9) / 2;
-        imagestring($new_image, $font_size, 5, 3, $string_size, $font_color);
-        imagestring($new_image, $font_size, 5, 20, $string_service, $font_color);
-        imagefill($new_image, 100, 0, $bg_color);
-        imagepng($new_image, $image['file_full_path']);
-        imagedestroy($new_image);
+        $param = '';
+        $param .= 'width='.$request->width;
+        $param .= '&height='.$request->height;
+        $param .= '&type='.$request->type;
+        $param .= $request->service ? '&service='.$request->service : '';
+        $param .= $request->prefix ? '&prefix='.$request->prefix : '';
+        $param .= $request->bgColor ? '&bgColor='.$request->bgColor : '';
+        $param .= $request->opacity ? '&opacity='.$request->opacity : '';
 
-        return $image['file_full_path'];
+        if($request->requestFrom === 'view'){
+            return redirect()
+                ->route('imageGenerate')
+                ->with('service', $request->service)
+                ->with('service', $request->prefix)
+                ->with('requestUrl', '/image/generation?'.$param)
+                ->with('fileFullPath', $this->image_root_directory.'/'.$image['service'].'/'.$image['file_name'])
+                ->withInput($view_model);
+        }else{
+            return $this->getImage($request);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function upload(Request $request)
     {
-        //
+        $root_dir_name = $_SERVER['DOCUMENT_ROOT'] . $this->image_root_directory;
+        $dir_list = scandir($root_dir_name, 1);
+        $view_model['data'] = [];
+        $view_model['data']['serviceList'] = [];
+
+        foreach ($dir_list as $item) {
+            if ($item === '.' or $item === '..') {
+                continue;
+            }
+
+            array_push($view_model['data']['serviceList'], $item);
+        }
+
+        return view('image/upload')->with($view_model);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function ffff(Request $request)
     {
-        //
-    }
+        $this->validate($request, [
+            'file' => 'required',
+        ]);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+        $file = $request->file('file');
+        $service = $request->service ? $request->service : $this->default_image['service'];
+        $prefix = $request->prefix ? $request->prefix . '_': $this->default_image['prefix'];
+        $filename = $prefix .'_'. $file->getClientOriginalName();
+        $file_full_path = public_path('/images/uploads') .'/'.$service.'/'.$filename;
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        if (!is_dir($service)) {
+            mkdir($service, 0777, true);
+        }
+
+        if (!\File::exists($file_full_path)) {
+            $file->move(public_path('/images/uploads') .'/'.$service, $filename);
+        }
+
+        $viewModel = [
+            'service'=>$request->service,
+            'prefix'=>$request->prefix,
+            'file'=>$file,
+            'fileName'=>$file->getClientOriginalName(),
+            'fileFullPath'=> $this->image_root_directory.'/'.$service.'/'.$filename,
+        ];
+
+        return redirect()
+            ->route('imageUpload')
+            ->with('fileFullPath', $this->image_root_directory.'/'.$service.'/'.$filename)
+            ->withInput($viewModel);
     }
 }
