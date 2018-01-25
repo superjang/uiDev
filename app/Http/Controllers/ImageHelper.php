@@ -209,7 +209,7 @@ class ImageHelper extends Controller
                 ->route('imageGenerate')
                 ->with('service', $request->service)
                 ->with('service', $request->prefix)
-                ->with('requestUrl', '/image/generation?'.$param)
+                ->with('requestUrl',  $request->getSchemeAndHttpHost().'/image/generation?'.$param)
                 ->with('fileFullPath', $this->image_root_directory.'/'.$image['service'].'/'.$image['file_name'])
                 ->withInput($view_model);
         }else{
@@ -260,12 +260,12 @@ class ImageHelper extends Controller
             'prefix'=>$request->prefix,
             'file'=>$file,
             'fileName'=>$file->getClientOriginalName(),
-            'fileFullPath'=> $this->image_root_directory.'/'.$service.'/'.$filename,
+            'fileFullPath'=> $request->getSchemeAndHttpHost().$this->image_root_directory.'/'.$service.'/'.$filename,
         ];
 
         return redirect()
             ->route('imageUpload')
-            ->with('fileFullPath', $this->image_root_directory.'/'.$service.'/'.$filename)
+            ->with('fileFullPath', $request->getSchemeAndHttpHost().$this->image_root_directory.'/'.$service.'/'.$filename)
             ->withInput($viewModel);
     }
 }
