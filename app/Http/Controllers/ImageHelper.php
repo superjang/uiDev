@@ -196,6 +196,20 @@ class ImageHelper extends Controller
         if (!\File::exists($image['file_full_path'])) {
             // 이미지 없을 경우 이미지 생성
             $image['file_full_path'] = $this->makeImage($request);
+
+            $imageStore = new GeneratedImage;
+            $imageStore->image_type = 'generated';
+            $imageStore->service = $image['service'];
+            $imageStore->format = $image['type'];
+            $imageStore->width = $image['width'];
+            $imageStore->height = $image['height'];
+            $imageStore->prefix = $image['prefix'];
+            $imageStore->color = $image['bgColor'];
+            $imageStore->opacity = $image['opacity'];
+            $imageStore->full_path = $image['file_full_path'];
+            $imageStore->real_path = $image['directory'];
+            $imageStore->file_name = $image['file_name'];
+            $imageStore->save();
         }
 
         $param = '';
