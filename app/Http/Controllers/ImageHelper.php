@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\GeneratedImage;
+use App\UploadedImage;
 use Illuminate\Http\Request;
 
 class ImageHelper extends Controller
@@ -9,6 +11,7 @@ class ImageHelper extends Controller
     // 동적 이미지 생성 위치
     private $image_root_directory = '/public/images/uploads';
 
+    // 생성 이미지 포멧
     private $image_format = ['png','jpg','gif'];
 
     // 기본 이미지 생성 정보
