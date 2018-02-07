@@ -4,8 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class FontHelper extends Controller
+class ImagesGenerateController extends Controller
 {
+    // 동적 이미지 생성 위치
+    private $image_root_directory = '/public/images/uploads';
+
+    // 생성 이미지 포멧
+    private $image_format = ['png','jpg','gif'];
+
+    // 기본 이미지 생성 정보
+    private $default_image = [
+        'service' => 'default', // directory name
+        'prefix' => '', // filename prefix
+        'type' => 'png', // file extension
+        'bgColor' => '6482d8', // file background color
+        'opacity' => 0 // file opacity
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +28,7 @@ class FontHelper extends Controller
      */
     public function index()
     {
-        // 컬렉션조회
+        //
     }
 
     /**
@@ -23,7 +38,9 @@ class FontHelper extends Controller
      */
     public function create()
     {
-        // 새 모델 입력을 위한 폼페이지
+        //
+        $view_model['image_format'] = $this->image_format;
+        return view('image/generate')->with($view_model);
     }
 
     /**
@@ -34,7 +51,7 @@ class FontHelper extends Controller
      */
     public function store(Request $request)
     {
-        // 새 모델 삽입
+        //
     }
 
     /**
@@ -45,7 +62,7 @@ class FontHelper extends Controller
      */
     public function show($id)
     {
-        // 기본키 값을 가진 모델 조회
+        //
     }
 
     /**
@@ -56,7 +73,7 @@ class FontHelper extends Controller
      */
     public function edit($id)
     {
-        // 기본키 값을 가진 모델 수정을 위한 폼페이지
+        //
     }
 
     /**
@@ -68,7 +85,7 @@ class FontHelper extends Controller
      */
     public function update(Request $request, $id)
     {
-        // 기본키 값을 가진 모델 수정
+        //
     }
 
     /**
@@ -79,6 +96,6 @@ class FontHelper extends Controller
      */
     public function destroy($id)
     {
-        // 기본키 값을 가진 모델 제거
+        //
     }
 }

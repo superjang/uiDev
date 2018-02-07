@@ -2,9 +2,9 @@
 
 @section('content')
 <ul class="tabs tab-demo z-depth-1">
-        <li class="tab"><a target="_self" class="active" href="{{ route('imageGenerate') }}">Generate</a></li>
-        <li class="tab"><a target="_self" href="{{ route('imageUpload') }}">Upload</a></li>
-        <li class="tab"><a target="_self" href="{{ route('listing') }}">List</a></li>
+        <li class="tab"><a target="_self" class="active" href="{{ route('images.generateForm') }}">Generate</a></li>
+        <li class="tab"><a target="_self" href="{{ route('images.uploadForm') }}">Upload</a></li>
+        <li class="tab"><a target="_self" href="{{ route('images.collection') }}">List</a></li>
 </ul>
 
 <div class="layout col1">
@@ -49,8 +49,9 @@
                 SET IMAGE PARAMETER
         </h5>
 
-        <form action="{{ route('imageMake') }}" method="get" enctype="multipart/form-data">
+        <form action="{{ route('images.store') }}" method="post" enctype="multipart/form-data">
                 {{ csrf_field() }}
+                <input type="hidden" name="createType" value="generate">
                 <input type="hidden" name="requestFrom" value="view">
                 <div class="input-field">
                         <input placeholder="ex) smiledelivery" id="first_name" type="text" class="validate" name="service" value="{{old('service')}}">

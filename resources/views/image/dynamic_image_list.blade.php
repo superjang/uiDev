@@ -2,9 +2,9 @@
 
 @section('content')
     <ul class="tabs tab-demo z-depth-1">
-        <li class="tab"><a target="_self" href="{{ route('imageGenerate') }}">Generate</a></li>
-        <li class="tab"><a target="_self" href="{{ route('imageUpload') }}">Upload</a></li>
-        <li class="tab"><a target="_self" class="active" href="{{ route('listing') }}">List</a></li>
+        <li class="tab"><a target="_self" href="{{ route('images.generateForm') }}">Generate</a></li>
+        <li class="tab"><a target="_self" href="{{ route('images.uploadForm') }}">Upload</a></li>
+        <li class="tab"><a target="_self" class="active" href="{{ route('images.collection') }}">List</a></li>
     </ul>
 
     {{--<ul class="collection">--}}

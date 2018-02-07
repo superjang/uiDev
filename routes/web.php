@@ -11,32 +11,57 @@
 |
 */
 
-// index
-Route::get('/', function(){ return view('index'); })->name('index');
-
-// image
-Route::prefix('/image')->group(function(){
-    Route::get('/generate', 'ImageHelper@main')->name('imageGenerate');
-    Route::get('/upload', 'ImageHelper@upload')->name('imageUpload');
-    Route::post('/ffff', 'ImageHelper@ffff')->name('controller_upload');
-    Route::get('/generation', 'ImageHelper@getImage')->name('generation');
-    Route::get('/list', 'ImageHelper@listingImage')->name('listing');
-    Route::get('/make', 'ImageHelper@make')->name('imageMake');
+Route::prefix('/images')->group(function(){
+    Route::get('', 'ImageController@index')->name('images.collection');
+    Route::get('/generateForm', 'ImageController@generateForm')->name('images.generateForm');
+    Route::get('/uploadForm', 'ImageController@uploadForm')->name('images.uploadForm');
+    Route::post('/store', 'ImageController@store')->name('images.store');
+    Route::get('/generate', 'ImageController@getImage')->name('images.generate');
+    Route::get('/show', 'ImageController@show')->name('images.show');
+    Route::get('/editForm', 'ImageController@editForm')->name('images.editForm');
+    Route::put('/update', 'ImageController@update')->name('images.update');
+    Route::delete('/destroy', 'ImageController@destroy')->name('images.destroy');
 });
 
+// index
+//Route::get('/', function(){ return view('index'); })->name('index');
+//
+//// image
+//Route::prefix('/image')->group(function(){
+//    Route::get('/generate', 'ImageHelper@main')->name('imageGenerate');
+//    Route::get('/upload', 'ImageHelper@upload')->name('imageUpload');
+//    Route::post('/ffff', 'ImageHelper@ffff')->name('controller_upload');
+//    Route::get('/generation', 'ImageHelper@getImage')->name('generation');
+//    Route::get('/list', 'ImageHelper@listingImage')->name('listing');
+//    Route::get('/make', 'ImageHelper@make')->name('imageMake');
+//});
+//
 // font
 Route::prefix('/font')->group(function(){
     Route::get('/list', 'FontHelper@list')->name('fontListView');
     Route::get('/upload', 'FontHelper@upload')->name('fontUploadView');
     Route::post('/add', 'FontHelper@add')->name('fontAdd');
-
 });
 
+//Route::resource('imagesGenerate', 'ImagesGenerateController', [
+//    'names' => [
+//        'index' => 'imagesGenerate.index',
+//        'create' => 'imagesGenerate.create',
+//        'upload' => 'imagesGenerate.upload',
+//        'store' => 'imagesGenerate.store',
+//        'edit' => 'imagesGenerate.edit',
+//        'update' => 'imagesGenerate.update',
+//        'destroy' => 'imagesGenerate.destroy'
+//    ],
+//    'parameters' => [
+//        'images' => 'type'
+//    ]
+//]);
 
-Route::get('/test', function(){
-    $public = $_SERVER['DOCUMENT_ROOT'].'\public\\';
-
-    dd(is_readable($public.'index.html'));
+//Route::get('/test', function(){
+//    $public = $_SERVER['DOCUMENT_ROOT'].'\public\\';
+//
+//    dd(is_readable($public.'index.html'));
 //   $page = file_get_contents($public.'index.html');
 //   $page = str_replace('{data}','변환할 데이터!!', $page);
 //
@@ -75,7 +100,7 @@ Route::get('/test', function(){
 //        $info = explode('@',$line);
 //        print '<p>'.$info[0].'##'.$info[1].'</p>';
 //    }
-});
+//});
 
 
 

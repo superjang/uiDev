@@ -2,9 +2,9 @@
 
 @section('content')
         <ul class="tabs tab-demo z-depth-1">
-                <li class="tab"><a target="_self" href="{{ route('imageGenerate') }}">Generate</a></li>
-                <li class="tab"><a target="_self" class="active" href="{{ route('imageUpload') }}">Upload</a></li>
-                <li class="tab"><a target="_self" href="{{ route('listing') }}">List</a></li>
+                <li class="tab"><a target="_self" href="{{ route('images.generateForm') }}">Generate</a></li>
+                <li class="tab"><a target="_self" class="active" href="{{ route('images.uploadForm') }}">Upload</a></li>
+                <li class="tab"><a target="_self" href="{{ route('images.collection') }}">List</a></li>
         </ul>
 
 <div class="layout col1">
@@ -47,11 +47,12 @@
                 DUMMY IMAGE UPLOAD
         </h5>
 
-        <form action="{{ route('controller_upload') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('images.store') }}" method="post" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 {{--@foreach ($errors->all() as $error)--}}
                         {{--<h1>{{ $error }}</h1>--}}
                 {{--@endforeach--}}
+                <input type="hidden" name="createType" value="upload">
                 <div class="input-field">
                         <input placeholder="ex) smiledelivery" name="service" type="text" class="validate" value="@if(old('service')){{ old('service') }}@endif">
                         <label for="first_name" class="active">Service (directory name)</label>
