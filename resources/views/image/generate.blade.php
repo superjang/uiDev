@@ -66,7 +66,7 @@
                 <div class="input-field">
                         <div class="select-wrapper">
                                 <select class="initialized" name="type">
-                                @foreach($image_format as $item)
+                                @foreach($image_type_list as $item)
                                         @if(old('type'))
                                                 @if($item === old('type'))
                                                         <option value="{{$item}}" selected="selected">{{$item}}</option>

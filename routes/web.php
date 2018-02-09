@@ -11,6 +11,9 @@
 |
 */
 
+/**
+ * Image Controller
+ */
 Route::prefix('/images')->group(function(){
     Route::get('', 'ImageController@index')->name('images.collection');
     Route::get('/generateForm', 'ImageController@generateForm')->name('images.generateForm');
@@ -23,40 +26,17 @@ Route::prefix('/images')->group(function(){
     Route::delete('/destroy', 'ImageController@destroy')->name('images.destroy');
 });
 
-// index
-//Route::get('/', function(){ return view('index'); })->name('index');
-//
-//// image
-//Route::prefix('/image')->group(function(){
-//    Route::get('/generate', 'ImageHelper@main')->name('imageGenerate');
-//    Route::get('/upload', 'ImageHelper@upload')->name('imageUpload');
-//    Route::post('/ffff', 'ImageHelper@ffff')->name('controller_upload');
-//    Route::get('/generation', 'ImageHelper@getImage')->name('generation');
-//    Route::get('/list', 'ImageHelper@listingImage')->name('listing');
-//    Route::get('/make', 'ImageHelper@make')->name('imageMake');
-//});
-//
-// font
+/**
+ * Font Controller
+ */
 Route::prefix('/font')->group(function(){
     Route::get('/list', 'FontHelper@list')->name('fontListView');
     Route::get('/upload', 'FontHelper@upload')->name('fontUploadView');
     Route::post('/add', 'FontHelper@add')->name('fontAdd');
 });
 
-//Route::resource('imagesGenerate', 'ImagesGenerateController', [
-//    'names' => [
-//        'index' => 'imagesGenerate.index',
-//        'create' => 'imagesGenerate.create',
-//        'upload' => 'imagesGenerate.upload',
-//        'store' => 'imagesGenerate.store',
-//        'edit' => 'imagesGenerate.edit',
-//        'update' => 'imagesGenerate.update',
-//        'destroy' => 'imagesGenerate.destroy'
-//    ],
-//    'parameters' => [
-//        'images' => 'type'
-//    ]
-//]);
+
+
 
 //Route::get('/test', function(){
 //    $public = $_SERVER['DOCUMENT_ROOT'].'\public\\';
@@ -101,12 +81,7 @@ Route::prefix('/font')->group(function(){
 //        print '<p>'.$info[0].'##'.$info[1].'</p>';
 //    }
 //});
-
-
-
 //route('generate', ['width'=>100,'height'=>200]);
-
-
 // ULR 필터링 방법 - pattern
 //Route::pattern('aaa', '[0-9a-zA-Z]{3}');
 //Route::get('/{foo?}', function($foo = 'bar'){

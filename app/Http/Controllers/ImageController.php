@@ -9,11 +9,22 @@ use Illuminate\Support\Facades\DB;
 
 class ImageController extends Controller
 {
+    // 사이트(도메인) 리스트
+    private $site_list = [
+        'Gmarket PC',
+        'Gmarket Mobile',
+        'Auction PC',
+        'Auction Mobile',
+        'G9 PC',
+        'G9 Mobile',
+        'Etc'
+    ];
+
     // 동적 이미지 생성 위치
     private $image_root_directory = '/public/images/uploads';
 
     // 생성 이미지 포멧
-    private $image_format = ['png','jpg','gif'];
+    private $image_type_list = ['png','jpg','gif'];
 
     // 기본 이미지 생성 정보
     private $default_image = [
@@ -42,7 +53,8 @@ class ImageController extends Controller
             // required
             'width' => $request->width,
             'height' => $request->height,
-            'image_format' => $this->image_format,
+            'site_list' => $this->site_list,
+            'image_type_list' => $this->image_type_list,
 
             // options
             'service' => isset($request->service) ? $request->service : $this->default_image['service'],
@@ -64,6 +76,9 @@ class ImageController extends Controller
 
         // 이미지 전체 절대 경로
         $image['file_full_path'] = $image['directory'] . '/' . $image['file_name'];
+
+        // 이미지 request URL
+        $image['request_url'] = $this->image_root_directory .'/'. $image['service'] . '/' . $image['file_name'];
 
         return $image;
     }
@@ -147,7 +162,8 @@ class ImageController extends Controller
      */
     public function generateForm(Request $request)
     {
-        $view_model['image_format'] = $this->image_format;
+        $view_model['site_list'] = $this->site_list;
+        $view_model['image_type_list'] = $this->image_type_list;
 
         return view('image/generate')->with($view_model);
     }
@@ -229,7 +245,7 @@ class ImageController extends Controller
             $imageStore->prefix = $view_model['prefix'];
             $imageStore->color = $view_model['bgColor'];
             $imageStore->opacity = $view_model['opacity'];
-            $imageStore->full_path = $view_model['file_full_path'];
+            $imageStore->full_path = $view_model['request_url'];
             $imageStore->real_path = $view_model['directory'];
             $imageStore->file_name = $view_model['file_name'];
             $imageStore->save();
