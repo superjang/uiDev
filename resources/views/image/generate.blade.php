@@ -4,7 +4,7 @@
 <ul class="tabs tab-demo z-depth-1">
         <li class="tab"><a target="_self" class="active" href="{{ route('images.generateForm') }}">Generate</a></li>
         <li class="tab"><a target="_self" href="{{ route('images.uploadForm') }}">Upload</a></li>
-        <li class="tab"><a target="_self" href="{{ route('images.collection') }}">List</a></li>
+        <li class="tab"><a target="_self" href="{{ route('images.collection', ['imageAddedType' => 'generated']) }}">List</a></li>
 </ul>
 
 <div class="layout col1">
@@ -15,10 +15,10 @@
         <div id="box--image_viewer">
                 <div class="row">
                         <div class="card">
-                            @if (session('fileFullPath'))
+                            @if (session('full_path'))
                                 <div class="card-image">
-                                    <a href="{{session('fileFullPath')}}" target="_blank" title="{{ session('fileFullPath') }}">
-                                        <img src="{{session('fileFullPath')}}" alt="">
+                                    <a href="{{session('full_path')}}" target="_blank" title="{{ session('full_path') }}">
+                                        <img src="{{session('full_path')}}" alt="">
                                     </a>
                                     <button type="button" class="btn-floating halfway-fab waves-effect waves-light red" title="copy image path"><i class="material-icons">content_copy</i></button>
                                 </div>
@@ -26,7 +26,7 @@
                                     {{--<span class="card-title">IMAGE PATH</span>--}}
                                     {{--<input type="text" readonly value="{{session('fileFullPath')}}">--}}
                                     <span class="card-title">IMAGE REQUEST URL</span>
-                                    <input type="text" readonly value="{{session('requestUrl')}}">
+                                    <input type="text" readonly value="{{session('request_path')}}">
                                 </div>
                             @else
                                 <div class="card-image">
@@ -51,24 +51,40 @@
 
         <form action="{{ route('images.store') }}" method="post" enctype="multipart/form-data">
                 {{ csrf_field() }}
-                <input type="hidden" name="createType" value="generate">
-                <input type="hidden" name="requestFrom" value="view">
+                <input type="hidden" name="image_added_type" value="generate">
+                {{--<input type="hidden" name="requestFrom" value="view">--}}
+
+                <div class="input-field">
+                    <div class="select-wrapper">
+                        <select class="initialized" name="site">
+                            @foreach($site_list as $item)
+                                @if(old('site'))
+                                    <option value="{{$item}}" selected="selected">{{$item}}</option>
+                                @else
+                                    <option value="{{$item}}">{{$item}}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </div>
+                    <label>Site</label>
+                </div>
+
                 <div class="input-field">
                         <input placeholder="ex) smiledelivery" id="first_name" type="text" class="validate" name="service" value="{{old('service')}}">
                         <label for="first_name" class="active">Service (directory name)</label>
                 </div>
 
                 <div class="input-field">
-                        <input placeholder="ex) corner_best" id="first_name" type="text" class="validate" name="prefix" value="{{old('prefix')}}">
-                        <label for="first_name" class="active">Prefix (file name prefix)</label>
+                        <input placeholder="ex) corner_best" id="first_name" type="text" class="validate" name="tag" value="{{old('tag')}}">
+                        <label for="first_name" class="active">Tag</label>
                 </div>
 
                 <div class="input-field">
                         <div class="select-wrapper">
-                                <select class="initialized" name="type">
-                                @foreach($image_type_list as $item)
-                                        @if(old('type'))
-                                                @if($item === old('type'))
+                                <select class="initialized" name="image_format_type">
+                                @foreach($image_format_type as $item)
+                                        @if(old('image_format_type'))
+                                                @if($item === old('image_format_type'))
                                                         <option value="{{$item}}" selected="selected">{{$item}}</option>
                                                 @else
                                                         <option value="{{$item}}">{{$item}}</option>
@@ -107,7 +123,7 @@
                 </div>
 
                 <div class="input-field">
-                        <input placeholder="ex) 08364d" id="first_name" type="text" name="bgColor" class="validate" value="{{old('bgColor')}}">
+                        <input placeholder="ex) 08364d" id="first_name" type="text" name="color" class="validate" value="{{old('color')}}">
                         <label for="first_name" class="active">Color (hex)</label>
                 </div>
 

@@ -1,5 +1,28 @@
-footer {
-  color: skyblue;
-  font-family: hahaha;
+body{height:100%; background-color:#5c7784;}
+#content{
+  background-color:#fff;
+}
+.pagination{
+  text-align:center;
 }
 
+.image-list{margin:0;}
+.image-list .image-item{list-style: none;position:relative;height:120px;border-bottom:1px solid #eee;}
+.image-list .image-item:after{content:'';display:block;clear:both;}
+.image-list .image-item .image-thumbnail{display:block;position:absolute;left:0;top:0;width:120px;height:120px;background-position:50% 50%; background-repeat:no-repeat;background-size:cover;border-right:1px solid #eee;}
+/*.image-list .image-item .image-thumbnail .thumbnail{display:block;width:100%;}*/
+.image-list .image-item .image-info{position:relative;margin-left:120px;box-sizing:border-box; padding:10px 60px 10px 10px;height:100%;}
+.image-list .image-item .image-info *{margin:0;}
+.image-list .image-item .image-info .image-url{display:block;}
+.image-list .image-item .image-info .text{text-overflow: ellipsis;overflow: hidden;white-space: nowrap;max-width: 100%;display: block;}
+.image-list .image-item .image-info .usage{font-weight:bold;margin-bottom:5px;}
+.image-list .image-item .image-info .request_url{}
+.image-list .image-item .image-info .file-name{}
+.image-list .image-item .image-info .directory-name{}
+.image-list .image-item .image-info .delete-image{width:50px;height:100%;position:absolute;right:0; top:0; bottom:0;z-index:10;text-align:center;border-left:1px solid #eee;transition:all .3s ease;color:#08364d;}
+.image-list .image-item .image-info .delete-image .material-icons{margin-top:50px;}
+.image-list .image-item .image-info .delete-image:focus,
+.image-list .image-item .image-info .delete-image:hover{
+  background-color:#08364d;
+  color:#fff;
+}

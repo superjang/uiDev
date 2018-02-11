@@ -11,7 +11,7 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('fontListView') }}">
+                <a href="{{ route('font.collection') }}">
                     <i class="material-icons left">text_format</i>
                     FONT
                 </a>
@@ -25,7 +25,7 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('fontListView') }}">
+                <a href="{{ route('font.collection') }}">
                     <i class="material-icons left">text_format</i>
                     FONT
                 </a>

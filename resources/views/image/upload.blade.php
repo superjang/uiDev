@@ -4,7 +4,7 @@
         <ul class="tabs tab-demo z-depth-1">
                 <li class="tab"><a target="_self" href="{{ route('images.generateForm') }}">Generate</a></li>
                 <li class="tab"><a target="_self" class="active" href="{{ route('images.uploadForm') }}">Upload</a></li>
-                <li class="tab"><a target="_self" href="{{ route('images.collection') }}">List</a></li>
+                <li class="tab"><a target="_self" href="{{ route('images.collection', ['imageAddedType' => 'generated']) }}">List</a></li>
         </ul>
 
 <div class="layout col1">
@@ -15,16 +15,16 @@
         <div id="box--image_viewer">
                 <div class="row">
                         <div class="card">
-                                @if (session('fileFullPath'))
+                                @if (session('request_path'))
                                 <div class="card-image">
-                                        <a href="{{ session('fileFullPath') }}" target="_blank">
-                                                <img src="{{ session('fileFullPath') }}" alt="">
+                                        <a href="{{ session('request_path') }}" target="_blank">
+                                                <img src="{{ session('request_path') }}" alt="">
                                         </a>
                                         <button type="button" class="btn-floating halfway-fab waves-effect waves-light red" title="copy image path"><i class="material-icons">content_copy</i></button>
                                 </div>
                                 <div class="card-content">
                                         <span class="card-title">IMAGE PATH</span>
-                                        <input type="text" readonly value="{{ session('fileFullPath') }}">
+                                        <input type="text" readonly value="{{ session('request_path') }}">
                                 </div>
                                 @else
                                         <div class="card-image">
@@ -52,15 +52,31 @@
                 {{--@foreach ($errors->all() as $error)--}}
                         {{--<h1>{{ $error }}</h1>--}}
                 {{--@endforeach--}}
-                <input type="hidden" name="createType" value="upload">
+                <input type="hidden" name="image_added_type" value="upload">
+
+                <div class="input-field">
+                        <div class="select-wrapper">
+                                <select class="initialized" name="site">
+                                        @foreach($site_list as $item)
+                                                @if(old('site'))
+                                                        <option value="{{$item}}" selected="selected">{{$item}}</option>
+                                                @else
+                                                        <option value="{{$item}}">{{$item}}</option>
+                                                @endif
+                                        @endforeach
+                                </select>
+                        </div>
+                        <label>Site</label>
+                </div>
+
                 <div class="input-field">
                         <input placeholder="ex) smiledelivery" name="service" type="text" class="validate" value="@if(old('service')){{ old('service') }}@endif">
                         <label for="first_name" class="active">Service (directory name)</label>
                 </div>
 
                 <div class="input-field">
-                        <input placeholder="ex) corner_best" name="prefix" type="text" class="validate" value="@if(old('prefix')){{ old('prefix') }}@endif">
-                        <label for="first_name" class="active">Prefix (file name prefix)</label>
+                        <input placeholder="ex) corner_best" name="tag" type="text" class="validate" value="@if(old('tag')){{ old('tag') }}@endif">
+                        <label for="first_name" class="active">Tag (file name tage)</label>
                 </div>
 
                 <div class="input-field">

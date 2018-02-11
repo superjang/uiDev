@@ -10,7 +10,7 @@
     <div class="footer-copyright">
         <div class="container">
             © 2017 Copyright UXE
-            <a class="grey-text text-lighten-4 right" href="#!">TOP</a>
+            <a class="grey-text text-lighten-4 right" href="#">TOP</a>
         </div>
     </div>
 </footer>

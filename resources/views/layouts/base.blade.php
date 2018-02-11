@@ -10,6 +10,7 @@
     @yield('css_application')
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('public/frameworks/materialize/css/materialize.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/css/jaewon.css') }}">
 </head>
 <body>
 @include('../header')

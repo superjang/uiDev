@@ -14,6 +14,7 @@ class FontHelper extends Controller
     public function index()
     {
         // 컬렉션조회
+        return view('font/list');
     }
 
     /**

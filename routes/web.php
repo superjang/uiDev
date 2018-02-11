@@ -15,7 +15,7 @@
  * Image Controller
  */
 Route::prefix('/images')->group(function(){
-    Route::get('', 'ImageController@index')->name('images.collection');
+    Route::get('/list/{imageAddedType}', 'ImageController@index')->name('images.collection');
     Route::get('/generateForm', 'ImageController@generateForm')->name('images.generateForm');
     Route::get('/uploadForm', 'ImageController@uploadForm')->name('images.uploadForm');
     Route::post('/store', 'ImageController@store')->name('images.store');
@@ -23,16 +23,16 @@ Route::prefix('/images')->group(function(){
     Route::get('/show', 'ImageController@show')->name('images.show');
     Route::get('/editForm', 'ImageController@editForm')->name('images.editForm');
     Route::put('/update', 'ImageController@update')->name('images.update');
-    Route::delete('/destroy', 'ImageController@destroy')->name('images.destroy');
+    Route::get('/destroy', 'ImageController@destroy')->name('images.destroy');
 });
 
 /**
  * Font Controller
  */
 Route::prefix('/font')->group(function(){
-    Route::get('/list', 'FontHelper@list')->name('fontListView');
-    Route::get('/upload', 'FontHelper@upload')->name('fontUploadView');
-    Route::post('/add', 'FontHelper@add')->name('fontAdd');
+    Route::get('', 'FontHelper@index')->name('font.collection');
+//    Route::get('/upload', 'FontHelper@upload')->name('fontUploadView');
+//    Route::post('/add', 'FontHelper@add')->name('fontAdd');
 });
 
 
