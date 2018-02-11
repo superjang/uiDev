@@ -53,15 +53,15 @@ class ImageController extends Controller
             // required
             'width' => $request->width,
             'height' => $request->height,
-            'site' => $request->site,
-            'image_format_type' => $this->image_format_type,
+            'site' => $this->trimString($request->site),
+//            'image_format_type' => $this->trimString($this->image_format_type),
 
             // options
-            'service' => isset($request->service) ? $request->service : $this->default_image['service'],
-            'tag' => isset($request->tag) ? $request->tag : $this->default_image['tag'],
-            'color' => isset($request->color) ? $request->color : $this->default_image['color'],
-            'opacity' => isset($request->opacity) ? $request->opacity : $this->default_image['opacity'],
-            'image_format_type' => isset($request->image_format_type) ? $request->image_format_type : $this->default_image['image_format_type'],
+            'service' => isset($request->service) ? $this->trimString($request->service) : $this->default_image['service'],
+            'tag' => isset($request->tag) ? $this->trimString($request->tag) : $this->default_image['tag'],
+            'color' => isset($request->color) ? $this->trimString($request->color) : $this->default_image['color'],
+            'opacity' => isset($request->opacity) ? $this->trimString($request->opacity) : $this->default_image['opacity'],
+            'image_format_type' => isset($request->image_format_type) ? $this->trimString($request->image_format_type) : $this->default_image['image_format_type'],
         ];
 
         // 이미지 파일명
@@ -70,15 +70,16 @@ class ImageController extends Controller
         $image['file_name'] .= '_' . $image['color'];
         $image['file_name'] .= '_' . $image['opacity'];
         $image['file_name'] .= '.' . $image['image_format_type'];
+        $image['file_name'] = $this->trimString($image['file_name']);
 
         // 이미지 저장위치
-        $image['directory_path'] = $_SERVER['DOCUMENT_ROOT'] . $this->image_root_directory_path  .'/'. $image['service'];
+        $image['directory_path'] = $this->trimString($_SERVER['DOCUMENT_ROOT'] . $this->image_root_directory_path  .'/'. $image['service']);
 
         // 이미지 전체 절대 경로
-        $image['full_path'] = $image['directory_path'] . '/' . $image['file_name'];
+        $image['full_path'] = $this->trimString($image['directory_path'] . '/' . $image['file_name']);
 
         // 이미지 request URL
-        $image['request_path'] = $this->image_root_directory_path .'/'. $image['service'] . '/' . $image['file_name'];
+        $image['request_path'] = $this->trimString($this->image_root_directory_path .'/'. $image['service'] . '/' . $image['file_name']);
 
         // 이미지 생성 queryString
         $image['query_param'] = 'width='.$request->width;
@@ -88,19 +89,19 @@ class ImageController extends Controller
         $image['query_param'] .= $request->tag ? '&prefix='.$request->tag : '';
         $image['query_param'] .= $request->color ? '&color='.$request->color : '';
         $image['query_param'] .= $request->opacity ? '&opacity='.$request->opacity : '';
-
+        $image['query_param'] = $this->trimString($image['query_param']);
         return $image;
     }
 
     private function getImageUploadInformation(Request $request)
     {
         $file = $request->file('file');
-        $service = $request->service ? $request->service : $this->default_image['service'];
-        $site = $request->site;
-        $tag = $request->tag ? $request->tag: $this->default_image['tag'];
-        $file_name = $tag.'_'.$file->getClientOriginalName();
-        $directory_path = public_path('/images/uploads') .'/'.$site.'/'.$service;
-        $request_path = $this->image_root_directory_path .'/'.$site.'/'.$service.'/'.$file_name;
+        $service = $request->service ? $this->trimString($request->service) : $this->default_image['service'];
+        $site = $this->trimString($request->site);
+        $tag = $request->tag ? $this->trimString($request->tag): $this->default_image['tag'];
+        $file_name = $this->trimString($tag.'_'.$file->getClientOriginalName());
+        $directory_path = $this->trimString(public_path('/images/uploads') .'/'.$site.'/'.$service);
+        $request_path = $this->trimString($this->image_root_directory_path .'/'.$site.'/'.$service.'/'.$file_name);
 
         $view_model = [
             'service'=>$service,
@@ -405,5 +406,10 @@ class ImageController extends Controller
         $imageTable = DB::table($table)->where('full_path','=', $searchValue);
 
         return $imageTable->count() === 0 ? false : $imageTable;
+    }
+
+    private function trimString($string)
+    {
+        return preg_replace("/\s+/","", $string);
     }
 }
