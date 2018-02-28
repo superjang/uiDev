@@ -306,6 +306,7 @@ class ImageController extends Controller
                     ->with('site', $view_model['site'])
                     ->with('service', $view_model['service'])
                     ->with('tag', $view_model['tag'])
+//                    ->with('file_name', $view_model['file_name'])
                     ->with('request_path', $request->getSchemeAndHttpHost().$view_model['request_path'])
                     ->withInput($view_model);
                 break;

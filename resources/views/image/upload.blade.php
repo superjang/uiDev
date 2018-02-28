@@ -88,9 +88,9 @@
                                 </div>
                                 <div class="file-path-wrapper">
                                     @if ($errors->has('file'))
-                                        <input class="file-path validate invalid" type="text" value="">
+                                        <input class="file-path validate invalid" type="text" value="@if(old('file_name')){{ old('file_name') }}@endif">
                                     @else
-                                        <input class="file-path validate" type="text" value="">
+                                        <input class="file-path validate" type="text" value="@if(old('file_name')){{ old('file_name') }}@endif">
                                     @endif
                                         {{--@isset($fileName) {{ $fileName }} @endisset--}}
                                 </div>

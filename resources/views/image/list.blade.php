@@ -36,4 +36,8 @@
     @if($data->count())
         {!! $data->render('common.pagination') !!}
     @endif
+
+    {{--<script>--}}
+        {{--var UXE = @json($data);--}}
+    {{--</script>--}}
 @endsection
